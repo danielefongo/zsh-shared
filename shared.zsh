@@ -51,12 +51,34 @@ function shared() {
     fi
 }
 
+function shared_map() {
+    if [[ $# == 1 ]]; then
+        ____map_create $1
+    elif [[ $# == 2 ]]; then
+        ____map_get $1 $2
+    elif [[ $# == 3 ]]; then
+        ____map_set $1 $2 $3
+    fi
+}
+
 function ____set() {
     ____shared "$1=${(qqq)2}"
 }
 
 function ____get() {
     ____shared "echo \$$1"
+}
+
+function ____map_create() {
+    ____shared "typeset -Ag $1"
+}
+
+function ____map_set() {
+    ____shared "$1[$2]=${(qqq)3}"
+}
+
+function ____map_get() {
+    ____shared "echo \$$1[$2]"
 }
 
 ____shared_server &
