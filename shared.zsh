@@ -1,27 +1,35 @@
 #/bin/zsh
 source lock.zsh
 
+function ____read_from_buffer() {
+    local line="" pipe="$1"
+    while zpty -r $pipe buffer; do
+        line+="$buffer"
+    done
+    echo ${line//$'\015'} | sed \$d
+}
+
 function ____shared_server() {
     while true; do
         lock_lock write
-        local line=""
-        while zpty -r testW buffer; do
-            line+="$buffer"
-        done
 
-        eval "function tmp() { ${line//$'\015'} }"
+        local line=$(____read_from_buffer writePipe)
+
+        eval "function tmp() { $line }"
         result=$(tmp)
-        eval ${line//$'\015'} &>/dev/null
+        eval "unset -f tmp"
 
-        zpty -w testR "$result"
+        eval $line &>/dev/null
+
+        zpty -w readPipe "$result"
         lock_unlock read
     done
 }
 
-zpty -d testW 2>/dev/null
-zpty -b testW cat
-zpty -d testR 2>/dev/null
-zpty -b testR cat
+zpty -d writePipe 2>/dev/null
+zpty -b writePipe cat
+zpty -d readPipe 2>/dev/null
+zpty -b readPipe cat
 
 lock_create server_access
 lock_create write
@@ -31,15 +39,12 @@ lock_lock read
 
 function ____shared()  {
     lock_lock server_access
-    zpty -w testW "$@"
+    zpty -w writePipe "$@"
     lock_unlock write
     lock_lock read
 
-    local line=""
-    while zpty -r testR buffer; do
-        line+="$buffer"
-    done
-    echo ${line//$'\015'} | sed \$d
+    ____read_from_buffer readPipe
+
     lock_unlock server_access
 }
 
