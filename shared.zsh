@@ -69,6 +69,10 @@ function shared_map() {
     fi
 }
 
+function shared_exe() {
+  ____shared "$@"
+}
+
 function shared_start() {
     ____shared_server &!
     ____shared_pid=$!
