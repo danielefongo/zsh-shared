@@ -23,12 +23,14 @@ zpty -b testW cat
 zpty -d testR 2>/dev/null
 zpty -b testR cat
 
+lock_create server_access
 lock_create write
 lock_create read
 lock_lock write
 lock_lock read
 
 function ____shared()  {
+    lock_lock server_access
     zpty -w testW "$@"
     lock_unlock write
     lock_lock read
@@ -38,6 +40,7 @@ function ____shared()  {
         line+="$buffer"
     done
     echo ${line//$'\015'} | sed \$d
+    lock_unlock server_access
 }
 
 function shared() {
