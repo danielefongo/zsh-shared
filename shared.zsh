@@ -8,14 +8,14 @@ function ____shared_server() {
         while zpty -r testW buffer; do
             line+="$buffer"
         done
-        
-        eval "function tmp() { ${line//$'\015'} }" 
+
+        eval "function tmp() { ${line//$'\015'} }"
         result=$(tmp)
         eval ${line//$'\015'} &>/dev/null
 
         zpty -w testR "$result"
         lock_unlock read
-    done    
+    done
 }
 
 zpty -d testW 2>/dev/null
@@ -44,11 +44,19 @@ function ____shared()  {
 }
 
 function shared() {
-    if [[ $# == 1 ]]; then
-        ____get $1
-    elif [[ $# == 2 ]]; then
-        ____set $1 $2
-    fi
+    declare -f "shared_$1" &>/dev/null || return
+    local command=$1
+    shift
+
+    shared_$command "$@"
+}
+
+function shared_var() {
+  if [[ $# == 1 ]]; then
+      ____get $1
+  elif [[ $# == 2 ]]; then
+      ____set $1 $2
+  fi
 }
 
 function shared_map() {
@@ -82,7 +90,7 @@ function ____map_get() {
 }
 
 function shared_start() {
-    ____shared_server &
+    ____shared_server &!
     ____shared_pid=$!
     echo "Shared server created"
 }
