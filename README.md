@@ -1,6 +1,7 @@
 # zsh-shared
 
 zsh-shared is a simple **shared memory** between processes for zsh. It works with subshells and jobs.
+Every action on shared memory is syncronized and mutually exclusive so any concurrent access to shared information is prevented.
 
 ## Getting started
 
@@ -44,3 +45,24 @@ shared stop
 
 #### exe
 `shared map <any zsh code>` runs custom commands
+
+### Example
+
+```zsh
+source <path>/shared.zsh
+shared start
+
+function asynchronous_function() {
+    shared var myvar second
+}
+
+shared var myvar first
+shared var myvar
+#should print 'first'
+
+asynchronous_function &
+sleep 0.5
+
+shared var myvar 
+#should print 'second'
+```
