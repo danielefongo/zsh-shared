@@ -1,5 +1,5 @@
 #/bin/zsh
-source lock.zsh
+source "${0:a:h}/lock.zsh"
 
 function ____read_from_buffer() {
     local line="" pipe="$1"
