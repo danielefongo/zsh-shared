@@ -44,7 +44,7 @@ shared stop
 * `shared map <map> <key> <value>` set the value of the 'key' on 'map' to 'value'
 
 #### exe
-`shared map <any zsh code>` runs custom commands
+`shared exe <any zsh code>` runs custom commands
 
 ### Example
 
