@@ -83,13 +83,13 @@ function shared_exe() {
 }
 
 function shared_start() {
+    [ $____shared_pid ] && shared_stop
     ____shared_server &!
     ____shared_pid=$!
-    echo "Shared server created"
 }
 
 function shared_stop() {
     kill -9 $____shared_pid &>/dev/null
-    echo "Shared server killed"
+    ____shared_pid=""
 }
 
