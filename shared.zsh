@@ -49,11 +49,15 @@ function ____shared()  {
 }
 
 function shared() {
+    option=$options[shwordsplit]
+
+    unsetopt shwordsplit
     declare -f "shared_$1" &>/dev/null || return
     local command=$1
     shift
 
     shared_$command "$@"
+    options[shwordsplit]=$option
 }
 
 function shared_var() {
