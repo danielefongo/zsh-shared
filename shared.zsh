@@ -69,9 +69,11 @@ function shared_var() {
 }
 
 function shared_map() {
-    if [[ $# == 1 ]]; then
+    if [[ $# -gt 1 ]]; then
         ____shared "typeset -Ag $1"
-    elif [[ $# == 2 ]]; then
+    fi
+
+    if [[ $# == 2 ]]; then
         ____shared "echo \$$1[$2]"
     elif [[ $# == 3 ]]; then
         ____shared "$1[$2]=${(qqq)3}"
