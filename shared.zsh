@@ -80,6 +80,10 @@ function shared_map() {
     fi
 }
 
+function shared_del() {
+    ____shared "unset $1"
+}
+
 function shared_exe() {
   ____shared "$@"
 }

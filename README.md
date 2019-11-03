@@ -43,6 +43,10 @@ shared stop
 * `shared map <map> <key>` get the value of the 'key' on 'map'
 * `shared map <map> <key> <value>` set the value of the 'key' on 'map' to 'value'
 
+#### del
+
+`shared del` destroys variables or maps.
+
 #### exe
 `shared exe <any zsh code>` runs custom commands
 
