@@ -6,7 +6,7 @@ function ____read_from_buffer() {
     while zpty -r $pipe buffer; do
         line+="$buffer"
     done
-    echo ${line//$'\015'} | sed \$d
+    echo -en ${line//$'\015'}
 }
 
 function ____shared_server() {
